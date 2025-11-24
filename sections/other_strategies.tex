@@ -1,89 +1,73 @@
 \begin{frame}{Microstructure-Based Trading Strategies}
     \begin{block}{Strategy Premise}
-        Exploit short-term market mechanics: order flow patterns, price spikes, mean reversion (seconds to minutes timeframe)
+        \small
+        Exploit short-term market mechanics: order flow patterns, price spikes, mean reversion
     \end{block}
 
-    \vspace{0.2cm}
+    \vspace{0.1cm}
 
     \begin{columns}[T]
         \begin{column}{0.48\textwidth}
             \begin{exampleblock}{Key Signals}
+                \small
                 \begin{itemize}
                     \item Large trade price impact
                     \item Order flow imbalance
-                    \item Short-term volatility spikes
+                    \item Volatility spikes
                     \item Volume bursts
-                    \item "Revert-on-spike" patterns
                 \end{itemize}
             \end{exampleblock}
         \end{column}
 
         \begin{column}{0.48\textwidth}
             \begin{block}{Data Requirements}
+                \small
                 \textbf{Available:}
                 \begin{itemize}
                     \item[\checkmark] Trade-by-trade data
-                    \item[\checkmark] Taker/maker identification
-                    \item[\checkmark] Timestamps \& sizes
+                    \item[\checkmark] Taker/maker ID
                 \end{itemize}
                 \textbf{Missing:}
                 \begin{itemize}
-                    \item[$\times$] Real-time order book depth
-                    \item[$\times$] Sub-second granularity
+                    \item[$\times$] Real-time book depth
                 \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
 
-    \vspace{0.3cm}
+    \vspace{0.15cm}
 
     \begin{alertblock}{Feasibility}
-        \textbf{Backtesting:} Moderate (can detect patterns, limited by order book data) \\
-        \textbf{Automation:} Requires CLOB API integration for live execution
+        \small
+        \textbf{Backtesting:} Moderate $\bullet$ \textbf{Automation:} Requires CLOB API
     \end{alertblock}
 \end{frame}
 
 \begin{frame}{Semantic Correlation Arbitrage}
     \begin{block}{Strategy Premise}
-        Exploit relationships between markets or external events: cross-market arbitrage, news-driven trades, event correlation
+        \small
+        Exploit relationships between markets: cross-market arbitrage, event correlation
     \end{block}
 
-    \vspace{0.2cm}
-
-    \begin{exampleblock}{Example: Election Market Correlation}
-        \begin{itemize}
-            \item Market A: ``Will Candidate X win presidency?''
-            \item Market B: ``Which party controls Senate?''
-            \item \textbf{Opportunity:} If Market A implies 80\% chance for Party Y, but Market B only prices 60\% for Party Y control $\rightarrow$ \textbf{Arbitrage}
-        \end{itemize}
+    \begin{exampleblock}{Example}
+        \footnotesize
+        Election markets: Candidate X win (80\%) vs Party control (60\%) $\rightarrow$ Mispricing opportunity
     \end{exampleblock}
-
-    \vspace{0.2cm}
 
     \begin{columns}[T]
         \begin{column}{0.48\textwidth}
             \begin{block}{Data Coverage}
-                \textbf{Subgraph provides:}
-                \begin{itemize}
-                    \item[\checkmark] Price series per market
-                    \item[\checkmark] Cross-market correlation analysis
-                \end{itemize}
-                \textbf{External needed:}
-                \begin{itemize}
-                    \item[$\rightarrow$] Gamma API (metadata, groupings)
-                    \item[$\rightarrow$] News feeds / NLP
-                \end{itemize}
+                \footnotesize
+                \textbf{Subgraph:} Price series, correlation
+
+                \textbf{External:} Gamma API, news feeds
             \end{block}
         \end{column}
 
         \begin{column}{0.48\textwidth}
             \begin{alertblock}{Implementation}
-                Requires \textbf{Semantic Logic Oracle (SLO)} to:
-                \begin{itemize}
-                    \item Map related markets
-                    \item Process news signals
-                    \item Detect logical implications
-                \end{itemize}
+                \footnotesize
+                Requires \textbf{SLO} to: map markets, process news, detect implications
             \end{alertblock}
         \end{column}
     \end{columns}
@@ -91,41 +75,39 @@
 
 \begin{frame}{Long-Horizon \& ML-Based Strategies}
     \begin{block}{Strategy Premise}
-        Operate on days/weeks timeframe: trend-following, predictive models, portfolio optimization
+        \small
+        Days/weeks timeframe: trend-following, predictive models, portfolio optimization
     \end{block}
-
-    \vspace{0.2cm}
 
     \begin{columns}[T]
         \begin{column}{0.48\textwidth}
             \begin{exampleblock}{Approach Examples}
+                \footnotesize
                 \begin{itemize}
-                    \item \textbf{Trend-following:} Momentum signals, multi-day patterns
-                    \item \textbf{ML Prediction:} Train models on historical outcomes
-                    \item \textbf{Portfolio:} Diversified positions across markets
-                    \item \textbf{Fundamental:} External data integration (polls, stats)
+                    \item \textbf{Trend:} Momentum signals
+                    \item \textbf{ML:} Train on outcomes
+                    \item \textbf{Portfolio:} Diversified
+                    \item \textbf{Fundamental:} Polls, stats
                 \end{itemize}
             \end{exampleblock}
         \end{column}
 
         \begin{column}{0.48\textwidth}
             \begin{block}{ML Training Data}
+                \footnotesize
                 \textbf{Subgraph provides:}
                 \begin{itemize}
-                    \item[\checkmark] 3+ years historical prices
-                    \item[\checkmark] \textbf{Outcome labels} (\texttt{Market.winningOutcome})
-                    \item[\checkmark] Volume, user activity
-                    \item[\checkmark] Daily platform stats
+                    \item[\checkmark] 3+ years prices
+                    \item[\checkmark] Outcome labels
+                    \item[\checkmark] Volume, activity
                 \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
 
-    \vspace{0.3cm}
-
     \begin{alertblock}{Key Advantage}
-        \textbf{Complete labeled dataset} for supervised learning -- rare in prediction markets! \\
-        External features (polls, news sentiment) can enhance models.
+        \footnotesize
+        \textbf{Complete labeled dataset} for supervised learning -- rare in prediction markets!
     \end{alertblock}
 \end{frame}
 
@@ -133,29 +115,27 @@
     \begin{table}[h]
     \centering
     \scriptsize
-    \begin{tabular}{p{2.2cm}p{2.2cm}p{2.2cm}p{2.2cm}p{1.8cm}}
+    \begin{tabular}{p{2cm}p{2cm}p{1.8cm}p{1.6cm}p{1.4cm}}
         \toprule
         \textbf{Strategy} & \textbf{Key Data} & \textbf{Subgraph} & \textbf{External} & \textbf{Feasibility} \\
         \midrule
-        \textbf{Microstructure} & Trade ticks, order flow & Full trade history & CLOB depth & Moderate \\
-        \addlinespace
-        \textbf{Semantic Corr.} & Market relationships, news & Price series & Gamma API, news feeds & Moderate \\
-        \addlinespace
-        \textbf{Price Parity} & Outcome prices, Split/Merge & Complete coverage & CLOB (live) & \textbf{HIGH} \\
-        \addlinespace
-        \textbf{Long-Horizon ML} & Historical prices, outcomes & Labels + history & Fundamental data & High \\
+        Microstructure & Trade ticks & Full history & CLOB depth & Moderate \\
+        Semantic Corr. & Relationships & Price series & Gamma, news & Moderate \\
+        Price Parity & Prices, Split/Merge & Complete & CLOB (live) & \textbf{HIGH} \\
+        Long-Horizon ML & History, outcomes & Labels + data & Fundamental & High \\
         \bottomrule
     \end{tabular}
     \end{table}
 
-    \vspace{0.4cm}
+    \vspace{0.2cm}
 
     \begin{block}{Strategic Priority}
+        \small
         \begin{enumerate}
-            \item \textbf{Price Parity Arbitrage} -- Immediate implementation (complete data, clear logic)
-            \item \textbf{Long-Horizon ML} -- Medium-term (strong foundation, needs feature engineering)
-            \item \textbf{Semantic Correlation} -- Requires SLO pipeline development
-            \item \textbf{Microstructure} -- Advanced (needs ultra-low latency infrastructure)
+            \item \textbf{Price Parity} -- Immediate (complete data, clear logic)
+            \item \textbf{Long-Horizon ML} -- Medium-term (strong foundation)
+            \item \textbf{Semantic Correlation} -- Requires SLO pipeline
+            \item \textbf{Microstructure} -- Advanced (ultra-low latency needed)
         \end{enumerate}
     \end{block}
 \end{frame}

@@ -1,10 +1,9 @@
 \begin{frame}{Trading System Architecture Overview}
     \begin{center}
-    \begin{tikzpicture}[node distance=1.8cm, scale=0.75, transform shape]
-        % Define styles
-        \tikzstyle{layer} = [rectangle, draw, fill=nus-blue!20, text width=3cm, text centered, rounded corners, minimum height=1.2cm, font=\small]
-        \tikzstyle{oracle} = [rectangle, draw, fill=nus-orange!30, text width=2.5cm, text centered, rounded corners, minimum height=1cm, font=\small]
-        \tikzstyle{arrow} = [thick,->,>=stealth]
+    \begin{tikzpicture}[node distance=1.8cm, scale=0.75, transform shape,
+        layer/.style={rectangle, draw, fill=nus-blue!20, text width=3cm, text centered, rounded corners, minimum height=1.2cm, font=\small},
+        oracle/.style={rectangle, draw, fill=nus-orange!30, text width=2.5cm, text centered, rounded corners, minimum height=1cm, font=\small},
+        arrow/.style={thick,->,>=stealth}]
 
         % Data Layer (bottom)
         \node[layer] (data) {\textbf{Data Layer}\\ Subgraph + Gamma API\\ + External Feeds};
@@ -30,9 +29,6 @@
         \draw[arrow] (strategy) -- (risk);
         \draw[arrow] (risk) -- (exec);
 
-        % Feedback loop
-        \draw[arrow, dashed, nus-orange] (exec.east) -- ++(1,0) |- (data.east);
-        \node[right, font=\tiny] at (exec.east) {Feedback};
     \end{tikzpicture}
     \end{center}
 
@@ -47,86 +43,64 @@
     \begin{columns}[T]
         \begin{column}{0.48\textwidth}
             \begin{block}{Semantic Logic Oracle (SLO)}
-                \textbf{Inputs:}
-                \begin{itemize}
-                    \item Market metadata (Gamma API)
-                    \item News feeds \& social media
-                    \item Event calendars
-                \end{itemize}
-                \textbf{Outputs:}
-                \begin{itemize}
-                    \item Related market mappings
-                    \item Event-driven signals
-                    \item Fundamental value estimates
-                \end{itemize}
+                \footnotesize
+                \textbf{Inputs:} Metadata, news, events
+
+                \textbf{Outputs:} Market mappings, event signals, value estimates
             \end{block}
 
-            \vspace{0.2cm}
-
             \begin{exampleblock}{Example}
-                ``News: Candidate X drops out'' \\
-                $\rightarrow$ SLO triggers sell signal on ``X wins'' market
+                \footnotesize
+                News: ``X drops out'' $\rightarrow$ Sell ``X wins''
             \end{exampleblock}
         \end{column}
 
         \begin{column}{0.48\textwidth}
             \begin{block}{Market Behavior Oracle (MBO)}
-                \textbf{Inputs:}
-                \begin{itemize}
-                    \item Trade history (Subgraph)
-                    \item Real-time prices (CLOB)
-                    \item Volume \& liquidity metrics
-                \end{itemize}
-                \textbf{Outputs:}
-                \begin{itemize}
-                    \item Price parity violations
-                    \item Momentum indicators
-                    \item Volatility measures
-                \end{itemize}
+                \footnotesize
+                \textbf{Inputs:} Trade history, real-time prices, volume
+
+                \textbf{Outputs:} Parity violations, momentum, volatility
             \end{block}
 
-            \vspace{0.2cm}
-
             \begin{exampleblock}{Example}
-                Detect: Yes + No = \$1.15 \\
-                $\rightarrow$ MBO triggers parity arbitrage
+                \footnotesize
+                Yes + No = \$1.15 $\rightarrow$ Parity arb
             \end{exampleblock}
         \end{column}
     \end{columns}
 
-    \vspace{0.3cm}
-
     \begin{alertblock}{Strategy Engine}
-        Combines SLO + MBO signals $\rightarrow$ Applies rules/ML models $\rightarrow$ Generates trade decisions
+        \footnotesize
+        SLO + MBO signals $\rightarrow$ Rules/ML models $\rightarrow$ Trade decisions
     \end{alertblock}
 \end{frame}
 
 \begin{frame}{Data Flow: From Subgraph to Execution}
     \begin{center}
-    \begin{tikzpicture}[node distance=0.8cm, scale=0.8, transform shape]
-        \tikzstyle{step} = [rectangle, draw, fill=nus-blue!15, text width=2.8cm, align=center, rounded corners, minimum height=0.9cm, font=\footnotesize]
-        \tikzstyle{data} = [rectangle, draw, fill=nus-orange!20, text width=2.8cm, align=center, rounded corners, minimum height=0.9cm, font=\footnotesize]
-        \tikzstyle{arrow} = [thick,->,>=stealth]
+    \begin{tikzpicture}[node distance=0.7cm, scale=0.65, transform shape,
+        step/.style={rectangle, draw, fill=nus-blue!15, text width=2.2cm, align=center, rounded corners, minimum height=0.7cm, font=\tiny},
+        data/.style={rectangle, draw, fill=nus-orange!20, text width=2cm, align=center, rounded corners, minimum height=0.7cm, font=\tiny},
+        arrow/.style={thick,->,>=stealth}]
 
         % Row 1: Data sources
-        \node[data] (sg) {Subgraph\\ (historical)};
-        \node[data, right=0.5cm of sg] (gamma) {Gamma API\\ (metadata)};
-        \node[data, right=0.5cm of gamma] (clob) {CLOB API\\ (real-time)};
-        \node[data, right=0.5cm of clob] (news) {News Feeds\\ (external)};
+        \node[data] (sg) {Subgraph};
+        \node[data, right=0.4cm of sg] (gamma) {Gamma API};
+        \node[data, right=0.4cm of gamma] (clob) {CLOB API};
+        \node[data, right=0.4cm of clob] (news) {News};
 
         % Row 2: Processing
-        \node[step, below=of sg, xshift=1.5cm] (ingest) {Data Ingestion\\ \& Normalization};
-        \node[step, below=of news, xshift=-1.5cm] (enrich) {Feature\\ Engineering};
+        \node[step, below=0.8cm of sg, xshift=1.3cm] (ingest) {Ingestion};
+        \node[step, below=0.8cm of news, xshift=-1.3cm] (enrich) {Feature Eng.};
 
         % Row 3: Analysis
-        \node[step, below=of ingest, xshift=1.5cm] (signal) {Signal Generation\\ (SLO + MBO)};
+        \node[step, below=0.8cm of ingest, xshift=1.3cm] (signal) {Signal Gen.\\ (SLO+MBO)};
 
         % Row 4: Decision
-        \node[step, below=of signal] (decide) {Strategy Logic\\ (Rules + ML)};
+        \node[step, below=0.8cm of signal] (decide) {Strategy};
 
         % Row 5: Execution
-        \node[step, below=of decide, xshift=-1.5cm] (risk) {Risk Check\\ \& Validation};
-        \node[step, below=of decide, xshift=1.5cm] (exec) {Execute Trades\\ (CLOB/On-chain)};
+        \node[step, below=0.8cm of decide] (exec) {Execute};
 
         % Arrows
         \draw[arrow] (sg) -- (ingest);
@@ -136,16 +110,13 @@
         \draw[arrow] (ingest) -- (enrich);
         \draw[arrow] (enrich) -- (signal);
         \draw[arrow] (signal) -- (decide);
-        \draw[arrow] (decide) -- (risk);
         \draw[arrow] (decide) -- (exec);
-        \draw[arrow] (risk) -- (exec);
     \end{tikzpicture}
     \end{center}
 
-    \vspace{0.2cm}
-
     \begin{block}{Pipeline Modularity}
-        Each component can be developed, tested, and improved independently while maintaining clean interfaces
+        \footnotesize
+        Each component is developed and tested independently with clean interfaces
     \end{block}
 \end{frame}
 
@@ -153,70 +124,29 @@
     \begin{columns}[T]
         \begin{column}{0.48\textwidth}
             \begin{block}{Backtesting Mode}
-                \textbf{Data Source:}
-                \begin{itemize}
-                    \item Historical subgraph data
-                    \item Archived news/events
-                    \item Simulated order book
-                \end{itemize}
+                \footnotesize
+                \textbf{Data:} Historical subgraph, archived news
 
-                \vspace{0.2cm}
+                \textbf{Process:} Replay trades $\rightarrow$ Generate signals $\rightarrow$ Simulate execution
 
-                \textbf{Process:}
-                \begin{enumerate}
-                    \item Replay historical trades
-                    \item Feed to SLO/MBO
-                    \item Strategy generates signals
-                    \item Simulate execution
-                    \item Calculate PnL \& metrics
-                \end{enumerate}
-
-                \vspace{0.2cm}
-
-                \textbf{Benefits:}
-                \begin{itemize}
-                    \item Test strategies risk-free
-                    \item Optimize parameters
-                    \item Validate assumptions
-                \end{itemize}
+                \textbf{Benefits:} Risk-free testing, parameter optimization
             \end{block}
         \end{column}
 
         \begin{column}{0.48\textwidth}
             \begin{block}{Live Trading Mode}
-                \textbf{Data Source:}
-                \begin{itemize}
-                    \item Real-time CLOB prices
-                    \item Live news feeds
-                    \item Subgraph for history
-                \end{itemize}
+                \footnotesize
+                \textbf{Data:} Real-time CLOB, live news, subgraph
 
-                \vspace{0.2cm}
+                \textbf{Process:} Monitor $\rightarrow$ Signal gen. $\rightarrow$ Risk check $\rightarrow$ Execute
 
-                \textbf{Process:}
-                \begin{enumerate}
-                    \item Monitor markets continuously
-                    \item SLO/MBO generate signals
-                    \item Strategy evaluates
-                    \item Risk management validates
-                    \item Execute via API/blockchain
-                \end{enumerate}
-
-                \vspace{0.2cm}
-
-                \textbf{Safeguards:}
-                \begin{itemize}
-                    \item Position limits
-                    \item Circuit breakers
-                    \item Manual override capability
-                \end{itemize}
+                \textbf{Safeguards:} Position limits, circuit breakers
             \end{block}
         \end{column}
     \end{columns}
 
-    \vspace{0.3cm}
-
     \begin{alertblock}{Unified Codebase}
+        \footnotesize
         Same strategy logic runs in both modes -- only data sources differ
     \end{alertblock}
 \end{frame}

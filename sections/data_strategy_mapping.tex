@@ -42,10 +42,10 @@
 
 \begin{frame}{Entity Mapping: Price Parity Strategy}
     \begin{center}
-    \begin{tikzpicture}[node distance=1.2cm, scale=0.8, transform shape]
-        \tikzstyle{entity} = [rectangle, draw, fill=nus-blue!20, text width=2.5cm, align=center, rounded corners, minimum height=0.8cm, font=\footnotesize]
-        \tikzstyle{use} = [rectangle, draw, fill=nus-orange!25, text width=2.8cm, align=center, rounded corners, minimum height=0.8cm, font=\footnotesize]
-        \tikzstyle{arrow} = [thick,->,>=stealth]
+    \begin{tikzpicture}[node distance=1.2cm, scale=0.8, transform shape,
+        entity/.style={rectangle, draw, fill=nus-blue!20, text width=2.5cm, align=center, rounded corners, minimum height=0.8cm, font=\footnotesize},
+        use/.style={rectangle, draw, fill=nus-orange!25, text width=2.8cm, align=center, rounded corners, minimum height=0.8cm, font=\footnotesize},
+        arrow/.style={thick,->,>=stealth}]
 
         % Entities (left column)
         \node[entity] (trade) {\textbf{Trade}\\ price, outcomeIndex};
@@ -69,8 +69,8 @@
         \draw[arrow] (global) -- (fees);
 
         % Additional connections
-        \draw[arrow, dashed, nus-blue] (trade.east) -- ++(0.8,0) |- (identify.west);
-        \draw[arrow, dashed, nus-blue] (split.east) -- ++(0.8,0) |- (validate.west);
+        \draw[arrow, dashed, color=nus-blue] (trade.east) -- ++(0.8,0) |- (identify.west);
+        \draw[arrow, dashed, color=nus-blue] (split.east) -- ++(0.8,0) |- (validate.west);
     \end{tikzpicture}
     \end{center}
 
@@ -85,64 +85,38 @@
     \begin{columns}[T]
         \begin{column}{0.48\textwidth}
             \begin{block}{Feature Engineering}
-                \textbf{From \texttt{Trade}:}
-                \begin{itemize}
-                    \item Price momentum (7-day change)
-                    \item Volume trends
-                    \item Volatility measures
-                \end{itemize}
+                \footnotesize
+                \textbf{Trade:} Price momentum, volume, volatility
 
-                \vspace{0.2cm}
+                \textbf{Market:} Total volume, trader count, time to resolution
 
-                \textbf{From \texttt{Market}:}
-                \begin{itemize}
-                    \item Total volume (liquidity proxy)
-                    \item Unique trader count (info quality)
-                    \item Time to resolution
-                \end{itemize}
-
-                \vspace{0.2cm}
-
-                \textbf{From \texttt{User}:}
-                \begin{itemize}
-                    \item Whale participation (top 10 users \%)
-                    \item Trader concentration (Gini coefficient)
-                \end{itemize}
+                \textbf{User:} Whale participation, concentration
             \end{block}
         \end{column}
 
         \begin{column}{0.48\textwidth}
             \begin{block}{Label Generation}
-                \textbf{From \texttt{Market.winningOutcome}:}
-                \begin{itemize}
-                    \item Binary label: Did outcome X win?
-                    \item Multi-class: Which of N outcomes won?
-                    \item Regression: Final price at resolution
-                \end{itemize}
+                \footnotesize
+                \textbf{From winningOutcome:} Binary, multi-class, or regression labels
 
-                \vspace{0.2cm}
-
-                \textbf{Example Training Set:}
-                \begin{center}
-                \scriptsize
+                \textbf{Training Set:}
+                \tiny
                 \begin{tabular}{ccc}
                     \toprule
                     \textbf{Features} & \textbf{Label} & \textbf{Source} \\
                     \midrule
-                    $[0.6, 10k, ...]$ & Yes & \texttt{Trade+Market} \\
-                    $[0.3, 50k, ...]$ & No & \texttt{Trade+Market} \\
+                    $[0.6, 10k]$ & Yes & Trade+Market \\
+                    $[0.3, 50k]$ & No & Trade+Market \\
                     \bottomrule
                 \end{tabular}
-                \end{center}
             \end{block}
-
-            \vspace{0.2cm}
-
-            \begin{alertblock}{Key Advantage}
-                \textbf{Ground truth labels} from resolved markets enable supervised learning
-            \end{alertblock}
         \end{column}
     \end{columns}
+
+    \begin{alertblock}{Key Advantage}
+        \footnotesize
+        \textbf{Ground truth labels} from resolved markets enable supervised learning
+    \end{alertblock}
 \end{frame}
 
 \begin{frame}{Cross-Strategy Data Reuse}
@@ -158,10 +132,10 @@
         \node[draw, fill=nus-orange!20, text width=2.2cm, align=center, rounded corners, font=\footnotesize, left=2.5cm of hub] (semantic) {\textbf{Semantic Corr.}\\ Market, Trade,\\ + Gamma API};
 
         % Arrows
-        \draw[thick, <->, >=stealth, nus-blue] (hub) -- (micro);
-        \draw[thick, <->, >=stealth, nus-blue] (hub) -- (parity);
-        \draw[thick, <->, >=stealth, nus-blue] (hub) -- (ml);
-        \draw[thick, <->, >=stealth, nus-blue] (hub) -- (semantic);
+        \draw[thick, <->, >=stealth, color=nus-blue] (hub) -- (micro);
+        \draw[thick, <->, >=stealth, color=nus-blue] (hub) -- (parity);
+        \draw[thick, <->, >=stealth, color=nus-blue] (hub) -- (ml);
+        \draw[thick, <->, >=stealth, color=nus-blue] (hub) -- (semantic);
     \end{tikzpicture}
     \end{center}
 
