@@ -1,0 +1,68 @@
+\begin{frame}{Trading Strategy Landscape}
+    \begin{block}{Four Strategy Categories}
+        Our subgraph infrastructure enables systematic trading across multiple timeframes and data sources:
+    \end{block}
+
+    \vspace{0.3cm}
+
+    \begin{center}
+    \begin{tikzpicture}[scale=0.9, transform shape]
+        % Draw axes
+        \draw[->] (0,0) -- (7,0) node[right] {\small Timeframe};
+        \draw[->] (0,0) -- (0,5) node[above] {\small Data Source};
+
+        % Axis labels
+        \node[below] at (1,0) {\tiny Seconds};
+        \node[below] at (3.5,0) {\tiny Hours};
+        \node[below] at (6,0) {\tiny Days/Weeks};
+
+        \node[left, rotate=90, anchor=south] at (0,1) {\tiny On-chain};
+        \node[left, rotate=90, anchor=south] at (0,4) {\tiny Multi-source};
+
+        % Strategy boxes
+        \node[draw, fill=nus-blue!20, text width=2.5cm, align=center, font=\tiny] at (1.5,1.5)
+            {\textbf{Microstructure}\\ HFT arbitrage\\ Mean reversion};
+
+        \node[draw, fill=nus-orange!30, text width=2.5cm, align=center, font=\tiny] at (3.5,2.5)
+            {\textbf{Price Parity}\\ Binary arb\\ Multi-outcome};
+
+        \node[draw, fill=nus-blue!20, text width=2.5cm, align=center, font=\tiny] at (3.5,4)
+            {\textbf{Semantic Correlation}\\ Cross-market\\ News-driven};
+
+        \node[draw, fill=nus-blue!20, text width=2.5cm, align=center, font=\tiny] at (6,3.5)
+            {\textbf{Long-Horizon ML}\\ Trends\\ Predictions};
+    \end{tikzpicture}
+    \end{center}
+
+    \vspace{0.2cm}
+
+    \begin{center}
+        {\color{nus-orange} \textbf{Focus:}} Price Parity \& Statistical Arbitrage
+    \end{center}
+\end{frame}
+
+\begin{frame}{Strategy Types: Quick Overview}
+    \begin{table}[h]
+    \centering
+    \footnotesize
+    \begin{tabular}{p{2.5cm}p{3.5cm}p{3.5cm}}
+        \toprule
+        \textbf{Strategy} & \textbf{Key Signals} & \textbf{Primary Data} \\
+        \midrule
+        \textbf{Microstructure} & Order flow, price spikes, volume bursts & Trade timestamps, sizes, taker/maker \\
+        \addlinespace
+        \textbf{Semantic Corr.} & Related markets, news events, correlations & Market metadata, external feeds \\
+        \addlinespace
+        \textbf{Price Parity} & Yes+No $\neq$ \$1, outcome sum $\neq$ 100\% & Outcome prices, Split/Merge events \\
+        \addlinespace
+        \textbf{Long-Horizon ML} & Trends, predictions, fundamentals & Historical prices, outcome labels \\
+        \bottomrule
+    \end{tabular}
+    \end{table}
+
+    \vspace{0.3cm}
+
+    \begin{alertblock}{Why Price Parity?}
+        \textbf{Highest feasibility} with current infrastructure: precise detection, clear execution logic, complete historical data for backtesting
+    \end{alertblock}
+\end{frame}

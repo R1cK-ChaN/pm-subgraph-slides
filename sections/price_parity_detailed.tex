@@ -1,0 +1,222 @@
+\begin{frame}{Price Parity: Core Concept}
+    \begin{block}{Binary Outcome Constraint}
+        In a binary market, Yes and No outcomes must satisfy:
+        \begin{equation*}
+            P_{\text{Yes}} + P_{\text{No}} = 1.00 \text{ USDC}
+        \end{equation*}
+    \end{block}
+
+    \vspace{0.3cm}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{exampleblock}{Arbitrage Opportunity 1}
+                \textbf{Sum $>$ \$1 (Overpriced)}
+                \begin{itemize}
+                    \item Yes = \$0.60, No = \$0.60
+                    \item Sum = \$1.20 $>$ \$1.00
+                    \item \textbf{Action:} Sell both outcomes
+                    \item Deposit \$1 $\rightarrow$ Split into 1 Yes + 1 No
+                    \item Sell for \$1.20 total
+                    \item \textbf{Profit:} \$0.20 (minus fees)
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{exampleblock}{Arbitrage Opportunity 2}
+                \textbf{Sum $<$ \$1 (Underpriced)}
+                \begin{itemize}
+                    \item Yes = \$0.40, No = \$0.40
+                    \item Sum = \$0.80 $<$ \$1.00
+                    \item \textbf{Action:} Buy both outcomes
+                    \item Buy for \$0.80 total
+                    \item Merge $\rightarrow$ Redeem \$1
+                    \item \textbf{Profit:} \$0.20 (minus fees)
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Split \& Merge Mechanics}
+    \begin{center}
+    \begin{tikzpicture}[node distance=1.5cm, scale=0.85, transform shape]
+        % Define styles
+        \tikzstyle{box} = [rectangle, draw, fill=nus-blue!20, text width=2.5cm, text centered, rounded corners, minimum height=1cm]
+        \tikzstyle{action} = [rectangle, draw, fill=nus-orange!30, text width=2cm, text centered, rounded corners, minimum height=0.8cm, font=\small]
+        \tikzstyle{arrow} = [thick,->,>=stealth]
+
+        % Split flow (top)
+        \node[box] (usdc1) {1.0 USDC};
+        \node[action, right=1.5cm of usdc1] (split) {SPLIT};
+        \node[box, right=1.5cm of split] (tokens1) {1 Yes token\\ + \\ 1 No token};
+        \node[action, right=1.5cm of tokens1] (sell) {SELL BOTH};
+        \node[box, right=1.5cm of sell] (profit1) {1.20 USDC\\ \textbf{+\$0.20}};
+
+        % Arrows for split flow
+        \draw[arrow] (usdc1) -- (split);
+        \draw[arrow] (split) -- (tokens1);
+        \draw[arrow] (tokens1) -- (sell);
+        \draw[arrow] (sell) -- (profit1);
+
+        % Merge flow (bottom)
+        \node[box, below=2.5cm of profit1] (profit2) {1.00 USDC\\ \textbf{+\$0.20}};
+        \node[action, left=1.5cm of profit2] (merge) {MERGE};
+        \node[box, left=1.5cm of merge] (tokens2) {1 Yes token\\ + \\ 1 No token};
+        \node[action, left=1.5cm of tokens2] (buy) {BUY BOTH};
+        \node[box, left=1.5cm of buy] (start) {0.80 USDC};
+
+        % Arrows for merge flow
+        \draw[arrow] (start) -- (buy);
+        \draw[arrow] (buy) -- (tokens2);
+        \draw[arrow] (tokens2) -- (merge);
+        \draw[arrow] (merge) -- (profit2);
+
+        % Labels
+        \node[above=0.1cm of split, font=\scriptsize] {Arbitrage when Sum $>$ \$1};
+        \node[below=0.1cm of merge, font=\scriptsize] {Arbitrage when Sum $<$ \$1};
+    \end{tikzpicture}
+    \end{center}
+
+    \vspace{0.2cm}
+
+    \begin{alertblock}{Key Insight}
+        These on-chain operations (Split/Merge) are \textbf{permissionless} and \textbf{instant}, enabling pure arbitrage with minimal risk
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Multi-Outcome Parity}
+    \begin{block}{Generalized Constraint}
+        For markets with $N$ mutually exclusive outcomes:
+        \begin{equation*}
+            \sum_{i=1}^{N} P_i = 1.00 \text{ USDC}
+        \end{equation*}
+    \end{block}
+
+    \vspace{0.3cm}
+
+    \begin{exampleblock}{Example: 4-Way Presidential Primary}
+        \begin{center}
+        \begin{tabular}{lcc}
+            \toprule
+            \textbf{Candidate} & \textbf{Price} & \textbf{Implied Prob.} \\
+            \midrule
+            Candidate A & \$0.45 & 45\% \\
+            Candidate B & \$0.30 & 30\% \\
+            Candidate C & \$0.20 & 20\% \\
+            Candidate D & \$0.10 & 10\% \\
+            \midrule
+            \textbf{Sum} & \textbf{\$1.05} & \textbf{105\%} \\
+            \bottomrule
+        \end{tabular}
+        \end{center}
+    \end{exampleblock}
+
+    \vspace{0.2cm}
+
+    \begin{alertblock}{Arbitrage Action}
+        Sum = \$1.05 $>$ \$1.00 $\rightarrow$ \textbf{Sell complete set} (Split \$1 into all 4, sell for \$1.05, profit \$0.05)
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Subgraph Data Coverage for Price Parity}
+    \begin{table}[h]
+    \centering
+    \small
+    \begin{tabular}{p{4cm}cp{4.5cm}}
+        \toprule
+        \textbf{Data Requirement} & \textbf{Status} & \textbf{Source/Notes} \\
+        \midrule
+        Trade prices (all outcomes) & \checkmark & \texttt{Trade.price}, \texttt{Trade.outcomeIndex} \\
+        \addlinespace
+        Split events (mint tokens) & \checkmark & \texttt{FPMMTokenSplit} entity \\
+        \addlinespace
+        Merge events (redeem USDC) & \checkmark & \texttt{FPMMTokenMerge} entity \\
+        \addlinespace
+        Trading fees & \checkmark & \texttt{Trade.fee}, \texttt{GlobalStats.totalFees} \\
+        \addlinespace
+        Position tracking & \checkmark & \texttt{Position.balance} per outcome \\
+        \addlinespace
+        Transaction timestamps & \checkmark & \texttt{Trade.timestamp} (second granularity) \\
+        \addlinespace
+        Real-time order book & $\times$ & Requires CLOB API (off-chain) \\
+        \bottomrule
+    \end{tabular}
+    \end{table}
+
+    \vspace{0.3cm}
+
+    \begin{block}{Data Completeness}
+        \textbf{Historical data:} 100\% complete from subgraph \\
+        \textbf{Live trading:} Combine subgraph + CLOB API for real-time quotes
+    \end{block}
+\end{frame}
+
+\begin{frame}{Example Calculation: Profit After Fees}
+    \begin{block}{Scenario}
+        \textbf{Market:} Binary election outcome \\
+        \textbf{Observed:} Yes = \$0.58, No = \$0.60 \\
+        \textbf{Sum:} \$1.18 $>$ \$1.00 (overpriced by 18\%)
+    \end{block}
+
+    \vspace{0.3cm}
+
+    \begin{exampleblock}{Arbitrage Execution}
+        \begin{enumerate}
+            \item \textbf{Split:} Deposit \$1,000 USDC $\rightarrow$ 1,000 Yes + 1,000 No tokens
+            \item \textbf{Sell:}
+                \begin{itemize}
+                    \item Sell 1,000 Yes at \$0.58 = \$580
+                    \item Sell 1,000 No at \$0.60 = \$600
+                    \item Total revenue = \$1,180
+                \end{itemize}
+            \item \textbf{Fees:} Assume 2\% trading fee
+                \begin{itemize}
+                    \item Fee on \$1,180 = \$23.60
+                \end{itemize}
+            \item \textbf{Net Profit:} \$1,180 - \$1,000 - \$23.60 = \textbf{\$156.40} (15.6\% ROI)
+        \end{enumerate}
+    \end{exampleblock}
+
+    \vspace{0.2cm}
+
+    \begin{alertblock}{Risk Factors}
+        Price slippage, gas fees, execution delay (CLOB ensures atomic execution)
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Backtesting Feasibility}
+    \begin{block}{Historical Detection Algorithm}
+        \begin{enumerate}
+            \item Query all trades for market, group by \texttt{outcomeIndex}
+            \item For each timestamp $t$, compute latest price per outcome
+            \item Calculate $\text{Sum}(t) = \sum_i P_i(t)$
+            \item Flag arbitrage when $|\text{Sum}(t) - 1.00| > \theta$ (threshold)
+            \item Simulate Split/Merge + trades at observed prices
+            \item Account for fees from \texttt{Trade.fee} data
+        \end{enumerate}
+    \end{block}
+
+    \vspace{0.3cm}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{exampleblock}{Validation}
+                \textbf{Cross-check:} Query actual \texttt{Split/Merge} events to confirm arbitrage activity occurred
+            \end{exampleblock}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{Feasibility Rating}
+                \textbf{HIGH} -- Complete data, clear rules, precise execution simulation
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+
+    \vspace{0.3cm}
+
+    \begin{block}{Automation Path}
+        \textbf{Live system:} Monitor CLOB API $\rightarrow$ Detect mispricing $\rightarrow$ Execute Split/Merge + trades via smart contracts
+    \end{block}
+\end{frame}

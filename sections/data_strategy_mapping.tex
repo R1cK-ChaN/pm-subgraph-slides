@@ -1,0 +1,178 @@
+\begin{frame}{Subgraph Entities: Strategic Value}
+    \begin{table}[h]
+    \centering
+    \tiny
+    \begin{tabular}{p{2.2cm}p{3.5cm}p{4.5cm}}
+        \toprule
+        \textbf{Entity} & \textbf{Key Fields} & \textbf{Strategy Application} \\
+        \midrule
+        \textbf{Trade} & \texttt{price}, \texttt{volume}, \texttt{timestamp}, \texttt{side}, \texttt{fee} &
+        Price discovery, volume analysis, fee accounting, order flow patterns \\
+        \addlinespace
+        \textbf{Market} & \texttt{totalVolume}, \texttt{uniqueTraders}, \texttt{winningOutcome}, \texttt{resolved} &
+        Market selection, liquidity filtering, outcome labels for ML, resolution tracking \\
+        \addlinespace
+        \textbf{FPMMTokenSplit} & \texttt{amount}, \texttt{timestamp}, \texttt{trader} &
+        \textbf{Arbitrage detection}: identifies when traders mint outcome tokens (parity arb signal) \\
+        \addlinespace
+        \textbf{FPMMTokenMerge} & \texttt{amount}, \texttt{timestamp}, \texttt{trader} &
+        \textbf{Arbitrage validation}: confirms arb completion via token redemption \\
+        \addlinespace
+        \textbf{Position} & \texttt{balance}, \texttt{outcomeIndex}, \texttt{user}, \texttt{market} &
+        PnL tracking, inventory management, position sizing, whale identification \\
+        \addlinespace
+        \textbf{User} & \texttt{totalVolume}, \texttt{tradeCount}, \texttt{positionCount} &
+        User classification (whale/retail), trader behavior analysis, following smart money \\
+        \addlinespace
+        \textbf{DailyStats} & \texttt{volume}, \texttt{activeUsers}, \texttt{newMarkets} &
+        Market regime detection, platform-wide trends, activity correlation with prices \\
+        \addlinespace
+        \textbf{GlobalStats} & \texttt{totalVolume}, \texttt{totalFees}, \texttt{totalTrades} &
+        Benchmarking, fee rate estimation, overall market health indicators \\
+        \bottomrule
+    \end{tabular}
+    \end{table}
+
+    \vspace{0.2cm}
+
+    \begin{alertblock}{Complete Coverage}
+        All entities serve multiple strategy purposes -- no redundant data collection
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}{Entity Mapping: Price Parity Strategy}
+    \begin{center}
+    \begin{tikzpicture}[node distance=1.2cm, scale=0.8, transform shape]
+        \tikzstyle{entity} = [rectangle, draw, fill=nus-blue!20, text width=2.5cm, align=center, rounded corners, minimum height=0.8cm, font=\footnotesize]
+        \tikzstyle{use} = [rectangle, draw, fill=nus-orange!25, text width=2.8cm, align=center, rounded corners, minimum height=0.8cm, font=\footnotesize]
+        \tikzstyle{arrow} = [thick,->,>=stealth]
+
+        % Entities (left column)
+        \node[entity] (trade) {\textbf{Trade}\\ price, outcomeIndex};
+        \node[entity, below=0.5cm of trade] (split) {\textbf{FPMMTokenSplit}\\ amount, timestamp};
+        \node[entity, below=0.5cm of split] (merge) {\textbf{FPMMTokenMerge}\\ amount, timestamp};
+        \node[entity, below=0.5cm of merge] (position) {\textbf{Position}\\ balance};
+        \node[entity, below=0.5cm of position] (global) {\textbf{GlobalStats}\\ totalFees};
+
+        % Uses (right column)
+        \node[use, right=2.5cm of trade] (detect) {Detect Mispricing\\ $\sum P_i \neq 1$};
+        \node[use, right=2.5cm of split] (identify) {Identify Arbitrage\\ Opportunities};
+        \node[use, right=2.5cm of merge] (validate) {Validate Execution\\ Success};
+        \node[use, right=2.5cm of position] (inventory) {Track Inventory\\ \& PnL};
+        \node[use, right=2.5cm of global] (fees) {Calculate Net\\ Profit After Fees};
+
+        % Arrows
+        \draw[arrow] (trade) -- (detect);
+        \draw[arrow] (split) -- (identify);
+        \draw[arrow] (merge) -- (validate);
+        \draw[arrow] (position) -- (inventory);
+        \draw[arrow] (global) -- (fees);
+
+        % Additional connections
+        \draw[arrow, dashed, nus-blue] (trade.east) -- ++(0.8,0) |- (identify.west);
+        \draw[arrow, dashed, nus-blue] (split.east) -- ++(0.8,0) |- (validate.west);
+    \end{tikzpicture}
+    \end{center}
+
+    \vspace{0.2cm}
+
+    \begin{block}{Data Completeness}
+        Every step of price parity arbitrage is fully observable via subgraph entities
+    \end{block}
+\end{frame}
+
+\begin{frame}{Entity Mapping: ML Training Pipeline}
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Feature Engineering}
+                \textbf{From \texttt{Trade}:}
+                \begin{itemize}
+                    \item Price momentum (7-day change)
+                    \item Volume trends
+                    \item Volatility measures
+                \end{itemize}
+
+                \vspace{0.2cm}
+
+                \textbf{From \texttt{Market}:}
+                \begin{itemize}
+                    \item Total volume (liquidity proxy)
+                    \item Unique trader count (info quality)
+                    \item Time to resolution
+                \end{itemize}
+
+                \vspace{0.2cm}
+
+                \textbf{From \texttt{User}:}
+                \begin{itemize}
+                    \item Whale participation (top 10 users \%)
+                    \item Trader concentration (Gini coefficient)
+                \end{itemize}
+            \end{block}
+        \end{column}
+
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Label Generation}
+                \textbf{From \texttt{Market.winningOutcome}:}
+                \begin{itemize}
+                    \item Binary label: Did outcome X win?
+                    \item Multi-class: Which of N outcomes won?
+                    \item Regression: Final price at resolution
+                \end{itemize}
+
+                \vspace{0.2cm}
+
+                \textbf{Example Training Set:}
+                \begin{center}
+                \scriptsize
+                \begin{tabular}{ccc}
+                    \toprule
+                    \textbf{Features} & \textbf{Label} & \textbf{Source} \\
+                    \midrule
+                    $[0.6, 10k, ...]$ & Yes & \texttt{Trade+Market} \\
+                    $[0.3, 50k, ...]$ & No & \texttt{Trade+Market} \\
+                    \bottomrule
+                \end{tabular}
+                \end{center}
+            \end{block}
+
+            \vspace{0.2cm}
+
+            \begin{alertblock}{Key Advantage}
+                \textbf{Ground truth labels} from resolved markets enable supervised learning
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Cross-Strategy Data Reuse}
+    \begin{center}
+    \begin{tikzpicture}[scale=0.85, transform shape]
+        % Central data hub
+        \node[draw, circle, fill=nus-blue!30, minimum size=2.5cm, align=center, font=\small] (hub) {\textbf{Subgraph}\\ \textbf{Entities}\\ (11 types)};
+
+        % Strategies around the hub
+        \node[draw, fill=nus-orange!20, text width=2.2cm, align=center, rounded corners, font=\footnotesize, above=2cm of hub] (micro) {\textbf{Microstructure}\\ Trade, User};
+        \node[draw, fill=nus-orange!20, text width=2.2cm, align=center, rounded corners, font=\footnotesize, right=2.5cm of hub] (parity) {\textbf{Price Parity}\\ Trade, Split/Merge,\\ Position};
+        \node[draw, fill=nus-orange!20, text width=2.2cm, align=center, rounded corners, font=\footnotesize, below=2cm of hub] (ml) {\textbf{ML Strategies}\\ Market, Trade,\\ User, DailyStats};
+        \node[draw, fill=nus-orange!20, text width=2.2cm, align=center, rounded corners, font=\footnotesize, left=2.5cm of hub] (semantic) {\textbf{Semantic Corr.}\\ Market, Trade,\\ + Gamma API};
+
+        % Arrows
+        \draw[thick, <->, >=stealth, nus-blue] (hub) -- (micro);
+        \draw[thick, <->, >=stealth, nus-blue] (hub) -- (parity);
+        \draw[thick, <->, >=stealth, nus-blue] (hub) -- (ml);
+        \draw[thick, <->, >=stealth, nus-blue] (hub) -- (semantic);
+    \end{tikzpicture}
+    \end{center}
+
+    \vspace{0.3cm}
+
+    \begin{block}{Efficiency Through Centralization}
+        \begin{itemize}
+            \item \textbf{Single data source} serves all strategies
+            \item \textbf{Consistent schema} across applications
+            \item \textbf{Incremental updates} benefit all consumers
+            \item \textbf{Cross-strategy insights} (e.g., parity arb informs microstructure models)
+        \end{itemize}
+    \end{block}
+\end{frame}

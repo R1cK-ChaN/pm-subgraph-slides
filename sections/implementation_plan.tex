@@ -1,4 +1,4 @@
-\begin{frame}{Implementation Progress}
+\begin{frame}{Infrastructure Implementation Progress}
     \begin{center}
     \begin{tikzpicture}[
         scale=0.7,
@@ -36,7 +36,7 @@
         \node[task] (t2) at (6,-1.3) {4 contracts indexed\\CTF, Exchange, NegRisk};
         \node[task] (t3) at (-2,-4.5) {Matchstick tests\\Validation scripts};
         \node[task] (t4) at (6,-4.5) {Studio v1.0.0\\GitHub Actions CI};
-        \node[task] (t5) at (2,-7.3) {Syncing 50M+ blocks\\3-14 days remaining};
+        \node[task] (t5) at (2,-7.3) {\textbf{80\% Complete}\\Block 63.6M / 79.4M\\$\sim$15.8M blocks behind};
 
         % Arrows between phases
         \draw[arrow] (p1) -- (p2);
@@ -55,4 +55,11 @@
         \footnotesize
         \texttt{AssemblyScript} $\bullet$ \texttt{GraphQL} $\bullet$ \texttt{The Graph Studio} $\bullet$ \texttt{GitHub Actions}
     \end{block}
+
+    \vspace{0.2cm}
+
+    \begin{alertblock}{Key Milestone}
+        \textbf{Phases 1-4 Complete} -- Infrastructure ready for strategy development \\
+        \textbf{Phase 5 at 80\%} -- Full historical data accessible soon
+    \end{alertblock}
 \end{frame}

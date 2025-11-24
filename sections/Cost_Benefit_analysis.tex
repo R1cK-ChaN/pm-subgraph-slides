@@ -63,3 +63,35 @@
         \end{column}
     \end{columns}
 \end{frame}
+
+\begin{frame}{Our Solution: Custom Subgraph Infrastructure}
+    \begin{block}{Why Custom Subgraph?}
+        \begin{enumerate}
+            \item \textbf{Engineering Efficiency}
+                \begin{itemize}
+                    \item Automated indexing vs. manual JSON-RPC parsing
+                    \item Built-in reorg handling and data consistency
+                    \item GraphQL API eliminates complex data joins
+                \end{itemize}
+
+            \item \textbf{Development Velocity}
+                \begin{itemize}
+                    \item 10x faster queries than direct RPC calls
+                    \item Declarative schema design with TypeScript
+                    \item Hot-reload development environment
+                \end{itemize}
+
+            \item \textbf{Research \& Trading Flexibility}
+                \begin{itemize}
+                    \item Custom aggregations for behavioral analysis
+                    \item Iterative schema evolution without data loss
+                    \item \textbf{Enables systematic trading strategies}
+                \end{itemize}
+        \end{enumerate}
+    \end{block}
+
+    \begin{alertblock}{Implementation Status}
+        \small
+        \textbf{4 contracts} $\bullet$ \textbf{11 entities} $\bullet$ \textbf{Position PnL} $\bullet$ \textbf{Daily stats} $\bullet$ \textbf{CI/CD pipeline} $\bullet$ \textbf{Automated trading ready}
+    \end{alertblock}
+\end{frame}
